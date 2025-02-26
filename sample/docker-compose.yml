@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  news-community-postgres:
+    image: postgres:16.8
+    container_name: postgres
+    environment:
+      POSTGRES_DB: news-community
+      POSTGRES_USER: jwnsg
+      POSTGRES_PASSWORD: 1234567890
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgres_db:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7.2.0
+    container_name: redis
+    ports:
+      - "6381:6379"
+    volumes:
+      - ./redis_data:/data
+    command: ["redis-server", "--appendonly", "yes"]
+
+  rabbitmq:
+    image: rabbitmq:4.0.6-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"       # RabbitMQ 메시징 포트
+      - "15672:15672"     # RabbitMQ 관리 UI 포트
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: admin123
+    volumes:
+      - ./rabbitmq_data:/var/lib/rabbitmq
+
+volumes:
+  postgres_data:
+  redis_data:
+  rabbitmq_data:

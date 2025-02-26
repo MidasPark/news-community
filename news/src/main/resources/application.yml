@@ -1,0 +1,15 @@
+server:
+  port: 8082
+
+spring:
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/news}
+    username: ${SPRING_DATASOURCE_USERNAME:jwnsg}
+    password: ${SPRING_DATASOURCE_PASSWORD:1234567890}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
