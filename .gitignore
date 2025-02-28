@@ -49,7 +49,7 @@ Thumbs.db
 /sample/redis_data/*
 !/sample/redis_data/.keep 
 
-# nuxt
+# web nuxt
 /web/.DS_Store
 /web/node_modules/
 /web/dist/
