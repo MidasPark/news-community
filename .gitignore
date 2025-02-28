@@ -49,32 +49,19 @@ Thumbs.db
 /sample/redis_data/*
 !/sample/redis_data/.keep 
 
-# Node modules
-node_modules/
-
-# Build output
-.nuxt/
-dist/
-
-# Local environment files
-.env
-.env.local
-.env.*.local
-
-# Logs
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-
-# Editor directories and files
-.idea/
-.vscode/
-*.sublime-project
-*.sublime-workspace
-
-# MacOS files
-.DS_Store
-
-# TypeScript build output
-*.tsbuildinfo
+# nuxt
+/web/.DS_Store
+/web/node_modules/
+/web/dist/
+/web/npm-debug.log
+/web/yarn-error.log
+/web/package-lock.json
+/web/.idea/
+/web/*.iml
+/web/.nuxt/
+/web/.vscode/
+/web/.output/
+/web/public/manifest*.json
+/web/public/sw.js
+/web/public/workbox-sw*.js*
+/web/.data
