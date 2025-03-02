@@ -3,44 +3,82 @@ import { feedsInfo } from '~~/utils/api'
 </script>
 
 <template>
-  <header class="header">
-    <nav
-      class="inner"
-      role="navigation"
-    >
-      <NuxtLink
-        to="/"
-        aria-label="Go to homepage"
-      >
-        <svg
-          class="logo"
-          viewBox="0 0 900 900"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M504.908 750H839.476C850.103 750.001 860.542 747.229 869.745 741.963C878.948 736.696 886.589 729.121 891.9 719.999C897.211 710.876 900.005 700.529 900 689.997C899.995 679.465 897.193 669.12 891.873 660.002L667.187 274.289C661.876 265.169 654.237 257.595 645.036 252.329C635.835 247.064 625.398 244.291 614.773 244.291C604.149 244.291 593.711 247.064 584.511 252.329C575.31 257.595 567.67 265.169 562.36 274.289L504.908 372.979L392.581 179.993C387.266 170.874 379.623 163.301 370.42 158.036C361.216 152.772 350.777 150 340.151 150C329.525 150 319.086 152.772 309.883 158.036C300.679 163.301 293.036 170.874 287.721 179.993L8.12649 660.002C2.80743 669.12 0.00462935 679.465 5.72978e-06 689.997C-0.00461789 700.529 2.78909 710.876 8.10015 719.999C13.4112 729.121 21.0523 736.696 30.255 741.963C39.4576 747.229 49.8973 750.001 60.524 750H270.538C353.748 750 415.112 713.775 457.336 643.101L559.849 467.145L614.757 372.979L779.547 655.834H559.849L504.908 750ZM267.114 655.737L120.551 655.704L340.249 278.586L449.87 467.145L376.474 593.175C348.433 639.03 316.577 655.737 267.114 655.737Z"
-            fill="#00DC82"
-          />
-        </svg>
-      </NuxtLink>
-      <NuxtLink
-        v-for="(list, key) in feedsInfo"
-        :key="key"
-        :to="`/${key}`"
-        :class="{ active: $route.path.startsWith(`/${key}`) }"
-      >
-        {{ list.title }}
-      </NuxtLink>
-      <span class="github">
-        <a
-          href="https://github.com/nuxt/hackernews"
-          target="_blank"
-          rel="noopener banner"
-        >
-          Open on GitHub
-        </a>
-      </span>
+  <header class="app-header">
+    <nav class="main-nav">
+      <ul class="nav-list">
+        <li class="nav-item">
+          <NuxtLink to="/" class="nav-link">홈</NuxtLink>
+        </li>
+        <li class="nav-item">
+          <NuxtLink to="/news/economic-trends" class="nav-link">경제 동향</NuxtLink>
+        </li>
+        <li class="nav-item">
+          <NuxtLink to="/news/business-industry" class="nav-link">기업과 산업</NuxtLink>
+        </li>
+        <li class="nav-item">
+          <NuxtLink to="/news/financial-markets" class="nav-link">금융 시장</NuxtLink>
+        </li>
+        <li class="nav-item">
+          <NuxtLink to="/news/policy-regulation" class="nav-link">정책과 규제</NuxtLink>
+        </li>
+        <li class="nav-item">
+          <NuxtLink to="/news/global-economy" class="nav-link">국제 경제</NuxtLink>
+        </li>
+        <li class="nav-item">
+          <NuxtLink to="/community" class="nav-link">커뮤니티</NuxtLink>
+        </li>
+      </ul>
     </nav>
   </header>
 </template>
+
+<style scoped>
+.app-header {
+  background-color: #f8f8f8;
+  padding: 15px 0;
+  border-bottom: 1px solid #e2e2e2;
+}
+
+.main-nav {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.nav-list {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.nav-item {
+  margin: 0 10px;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+  font-size: 16px;
+  padding: 5px 0;
+  transition: color 0.2s;
+}
+
+.nav-link:hover, .router-link-active {
+  color: #0066cc;
+  border-bottom: 2px solid #0066cc;
+}
+
+@media (max-width: 768px) {
+  .nav-list {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .nav-item {
+    margin: 5px 0;
+  }
+}
+</style>

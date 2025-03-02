@@ -31,13 +31,15 @@ export function getFeed(state: StoreState, { feed, page }: FeedQuery) {
 
 export function fetchFeed(query: FeedQuery) {
   const state = useStore()
-
-  const { feed, page } = query
+  const { feed, page = 1 } = query
 
   return reactiveLoad<Item[]>(
     () => getFeed(state.value, query),
     (items) => {
       const ids = items.map(item => item.id)
+      if (!state.value.feeds[feed]) {
+        state.value.feeds[feed] = {}
+      }
       state.value.feeds[feed][page] = ids
       items
         .filter(Boolean)
@@ -50,8 +52,8 @@ export function fetchFeed(query: FeedQuery) {
           }
         })
     },
-    () => $fetch('/api/hn/feeds', { params: { feed, page } }),
-    (state.value.feeds[feed][page] || []).map(id => state.value.items[id]),
+    () => $fetch('/api/nyt/news', { params: { section: feed } }),
+    (state.value.feeds[feed]?.[page] || []).map(id => state.value.items[id]),
   )
 }
 

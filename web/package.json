@@ -31,5 +31,9 @@
     "nuxt": "^3.15.4",
     "postcss-nesting": "^13.0.1",
     "typescript": "^5.7.3"
+  },
+  "dependencies": {
+    "@pinia/nuxt": "^0.10.1",
+    "pinia": "^3.0.1"
   }
 }

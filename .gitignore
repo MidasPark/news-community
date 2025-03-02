@@ -65,3 +65,6 @@ Thumbs.db
 /web/public/sw.js
 /web/public/workbox-sw*.js*
 /web/.data
+
+# 환경 변수 파일 (민감한 정보 포함)
+.env 
