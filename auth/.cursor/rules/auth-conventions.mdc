@@ -1,0 +1,228 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Auth 도메인 컨벤션
+
+> 참고: 이 문서는 모든 도메인에 공통적으로 적용되는 [공통 아키텍처 컨벤션](/.cursor/rules/common-conventions.mdc)을 기반으로 합니다.
+
+## 패키지 구조
+- `com.kab.auth.domain`: 도메인 모델 및 비즈니스 로직
+- `com.kab.auth.application`: 유스케이스 및 서비스 로직
+- `com.kab.auth.infrastructure`: 외부 시스템 연동 및 구현체
+- `com.kab.auth.interfaces`: API 엔드포인트 및 컨트롤러
+
+## DDD 패턴 적용 - Auth 도메인 특화
+- **전략적 설계**:
+  - 바운디드 컨텍스트: 인증/인가 영역 명확히 설정
+  - 컨텍스트 맵: Gateway, Board 등 다른 바운디드 컨텍스트와의 관계 정의
+  
+- **전술적 설계**:
+  - 엔티티: `User`, `Role`, `Permission` (식별자로 구분)
+  - 값 객체: `Email`, `Password`, `TokenPayload` (불변성)
+  - 애그리거트: `User`를 루트로 하는 `UserCredential` 관계
+  - 레포지토리: 각 애그리거트 루트마다 하나의 레포지토리
+  - 도메인 이벤트: `UserRegistered`, `LoginSucceeded`, `LoginFailed`
+  - 도메인 서비스: 여러 애그리거트 연계 작업 (예: `AuthenticationService`)
+
+## SOLID 원칙 - Auth 도메인 특화 적용
+인증 도메인은 보안에 중요한 역할을 하므로 SOLID 원칙을 통해 견고하고 안전한 코드를 설계합니다.
+
+### 단일 책임 원칙 (Single Responsibility Principle)
+- 인증/인가 처리는 명확히 분리된 컴포넌트로 구현
+- 토큰 생성, 검증, 저장은 별도의 클래스로 분리
+- 보안 관련 설정과 실행 코드 분리
+- 구현 예시:
+  ```java
+  // 각 클래스는 하나의 책임만 갖도록 분리
+  public class TokenGenerator { /* 토큰 생성만 담당 */ }
+  public class TokenValidator { /* 토큰 검증만 담당 */ }
+  public class TokenStorage { /* 토큰 저장만 담당 */ }
+  ```
+
+### 개방/폐쇄 원칙 (Open/Closed Principle)
+- 다양한 인증 방식 추가에 열려있는 구조
+- 인증 공급자(Provider) 인터페이스 정의로 확장성 확보
+- 인증 메커니즘 변경 시 기존 코드 수정 최소화
+- 구현 예시:
+  ```java
+  // 인증 공급자 인터페이스
+  public interface AuthenticationProvider {
+      Authentication authenticate(Authentication authentication);
+  }
+  
+  // 다양한 인증 방식 구현
+  public class JwtAuthenticationProvider implements AuthenticationProvider { /* JWT 인증 */ }
+  public class OAuthAuthenticationProvider implements AuthenticationProvider { /* OAuth 인증 */ }
+  public class LdapAuthenticationProvider implements AuthenticationProvider { /* LDAP 인증 */ }
+  ```
+
+### 리스코프 치환 원칙 (Liskov Substitution Principle)
+- 모든 인증 토큰 타입은 기본 토큰 계약을 준수
+- 사용자 타입 간 일관된 행동 보장
+- 권한 검사 로직의 일관성 유지
+- 구현 예시:
+  ```java
+  // 기본 토큰 인터페이스
+  public interface Token {
+      String getValue();
+      boolean isExpired();
+      Set<String> getScopes();
+  }
+  
+  // 모든 토큰 구현체는 계약 준수
+  public class JwtToken implements Token { /* 구현 */ }
+  public class OAuthAccessToken implements Token { /* 구현 */ }
+  ```
+
+### 인터페이스 분리 원칙 (Interface Segregation Principle)
+- 인증과 인가 인터페이스 분리
+- 토큰 생성과 검증 역할 분리
+- 사용자 정보 접근 인터페이스 최소화
+- 구현 예시:
+  ```java
+  // 분리된 책임별 인터페이스
+  public interface UserAuthenticator {
+      Authentication authenticate(Credentials credentials);
+  }
+  
+  public interface UserAuthorizer {
+      boolean hasPermission(Authentication auth, String permission);
+  }
+  
+  // 토큰 관련 분리된 인터페이스
+  public interface TokenIssuer { Token issue(Authentication auth); }
+  public interface TokenVerifier { boolean verify(Token token); }
+  ```
+
+### 의존성 역전 원칙 (Dependency Inversion Principle)
+- 인증 서비스는 구체적인 저장소에 직접 의존하지 않음
+- 모든 외부 시스템 연동은 인터페이스를 통해 추상화
+- 보안 정책은 추상화 계층에 정의
+- 구현 예시:
+  ```java
+  // 고수준 인증 서비스는 추상화에 의존
+  public class AuthenticationService {
+      private final UserRepository userRepository;
+      private final PasswordEncoder passwordEncoder;
+      
+      // 인터페이스 기반 DI
+      public AuthenticationService(UserRepository userRepository, 
+                                 PasswordEncoder passwordEncoder) {
+          this.userRepository = userRepository;
+          this.passwordEncoder = passwordEncoder;
+      }
+  }
+  
+  // 인터페이스 정의
+  public interface UserRepository { User findByUsername(String username); }
+  public interface PasswordEncoder { boolean matches(String raw, String encoded); }
+  ```
+
+## 네이밍 컨벤션 - A메인 모델:Token`vider`
+- 서비스: `AuthService``
+- 컨트ontrolpository`, `TokenReposirUseCaserUseCase`
+- 포트: `AuthenticationPort`, `UserRepositoryPort`
+- 어댑터: `JpaUserAdapter`, `OAuthProviderAdapter`
+
+### 메서드
+- 조회: `findByEmail`, `findByToken`
+- 생성: `createToken`, `registerUser`
+- 수정: `updateUserProfile`, `refreshToken`
+- 삭제: `deleteToken`, `revokeAccess`
+
+### 변수
+- 엔티티: `user`, `token`, `authProvider`
+- DTO: `userDto`, `tokenDto`, `authRequest`
+- 설정: `jwtSecret`, `tokenExpiration`
+
+## 코드 스타일
+- 모든 public 메서드는 JavaDoc 주석 필수
+- 비즈니스 로직은 도메인 모델에 캡슐화
+- 트랜잭션 경계는 서비스 레이어에서 관리
+- 보안 관련 설정은 별도 설정 클래스로 분리
+
+## 최적화 전략 및 규칙 준수 방법
+1. **계층 분리 강화**:
+   - 인터페이스와 구현체 분리 철저히 지키기
+   - 외부 계층에서 내부 계층으로의 의존성 금지
+   - `@Component`, `@Service` 등 스프링 애노테이션은 인프라/어댑터 계층에만 사용
+
+2. **의존성 주입 최적화**:
+   - 생성자 주입만 사용 (필드 주입 금지)
+   - 순환 참조 방지를 위한 의존성 그래프 관리
+   - 도메인 계층은 스프링에 의존하지 않도록 구성
+
+3. **도메인 모델 강화**:
+   - 값 객체를 적극 활용하여 유비쿼터스 언어 표현
+   - 불변 객체 사용으로 부작용 최소화
+   - 도메인 규칙을 메서드로 명확히 표현
+
+4. **유스케이스 중심 설계**:
+   - 하나의 유스케이스 = 하나의 인바운드 포트 = 하나의 서비스 메서드
+   - Command와 Query 책임 분리 (CQRS)
+   - 유스케이스 입력/출력은 전용 DTO로 명확히 정의
+
+5. **어댑터 독립성 보장**:
+   - 어댑터 구현 교체가 쉽도록 포트 인터페이스 안정적 설계
+   - 데이터베이스 스키마 변경이 도메인에 영향을 주지 않도록 매핑 계층 강화
+   - 외부 서비스 장애가 도메인 로직에 영향을 주지 않도록 격리
+
+## 테스트
+- 단위 테스트: `*Test.java`
+- 통합 테스트: `*IntegrationTest.java`
+- 테스트 데이터: `*TestData.java`
+- 아키텍처 검증 테스트: `ArchitectureTest.java` (ArchUnit 활용)
+
+## API 엔드포인트
+- RESTful 규칙 준수
+- 버전 관리: `/api/v1/auth/*`
+- 응답 형식: `ResponseEntity<T>`
+- 예외 처리: `GlobalExceptionHandler`
+
+## Auth 도메인 보완 사항
+1. **보안 취약점 방어 강화**:
+   - OWASP Top 10 취약점 대응 전략
+   - 정기적인 보안 취약점 스캔 및 개선
+   - 보안 코드 리뷰 체크리스트 
+
+2. **다중 인증(MFA) 지원**:
+   - 2단계 인증 플러그인 아키텍처
+   - 다양한 인증 팩터 통합 방안 (SMS, 이메일, 앱)
+   - 생체 인증 확장 지점
+
+3. **권한 관리 세분화**:
+   - RBAC(역할 기반) 모델 구현
+   - ABAC(속성 기반) 권한 확장성 제공
+   - 동적 권한 정책 설정 인터페이스
+
+4. **토큰 관리 전략**:
+   - 토큰 갱신 및 무효화 메커니즘
+   - 토큰 저장소 확장성 계획
+   - 분산 환경에서의 토큰 검증 전략
+
+## Java 21 기준 및 신뢰할 수 있는 정보원
+### Java 21 기능 활용
+- 코드 생성 및 검색은 **Java 21** 버전을 기준으로 수행
+- 다음 Java 21 기능 적극 활용:
+  - 가상 스레드(Virtual Threads) - `ThreadFactory.ofVirtual()`
+  - 패턴 매칭(Pattern Matching for switch) - 인증 객체 타입 처리
+  - 레코드 패턴(Record Patterns) - DTO 및 값 객체 정의
+  - 문자열 템플릿(String Templates) - 로깅, 메시지 처리
+  - 스코프 값(Scoped Values) - 보안 컨텍스트 전파
+
+### 인증/인가 관련 신뢰할 수 있는 정보원
+1. **공식 문서**:
+   - [Spring Security 공식 문서](https://docs.spring.io/spring-security/reference/index.html)
+   - [OAuth2 명세](https://oauth.net/2/)
+   - [JWT 공식 명세](https://jwt.io/)
+
+2. **인증/인가 모범 사례**:
+   - [OWASP 인증 체크리스트](https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html)
+   - [Baeldung Spring Security 가이드](https://www.baeldung.com/security-spring)
+   - [NIST 디지털 아이덴티티 가이드라인](https://pages.nist.gov/800-63-3/)
+
+3. **코드 레퍼런스**:
+   - [Spring Security Samples](https://github.com/spring-projects/spring-security-samples)
+   - [Auth0 Java SDK](https://github.com/auth0/auth0-java)

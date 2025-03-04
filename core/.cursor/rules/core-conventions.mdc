@@ -1,0 +1,245 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Core 도메인 컨벤션
+
+> 참고: 이 문서는 모든 도메인에 공통적으로 적용되는 [공통 아키텍처 컨벤션](/.cursor/rules/common-conventions.mdc)을 기반으로 합니다.
+
+## 도메인 역할
+- Core 도메인은 **라이브러리**처럼 사용되는 도메인입니다
+- 다른 모든 도메인에서 공통적으로 사용되는 클래스와 헬퍼 기능을 제공합니다
+- 재사용 가능한 컴포넌트, 유틸리티, 공통 인터페이스를 중앙화하여 관리합니다
+- 중복 코드를 줄이고 일관된 패턴을 적용하기 위한 기반 라이브러리 역할을 합니다
+
+## 패키지 구조
+- `com.kab.core.domain`: 공통 도메인 모델
+- `com.kab.core.application`: 공통 서비스 로직
+- `com.kab.core.infrastructure`: 공통 인프라스트럭처
+- `com.kab.core.interfaces`: 공통 인터페이스
+
+## DDD 패턴 적용
+- **공통 빌딩 블록**:
+  - 값 객체: `Money`, `Address`, `Email`, `PhoneNumber`
+  - 기본 엔티티: `BaseEntity`, `AuditableEntity`
+  - 식별자: `EntityId`, `UserId`, `NewsId`
+  - 도메인 이벤트: `DomainEvent`, `EventPublisher`
+  
+- **공통 패턴**:
+  - 레포지토리 인터페이스: `Repository<T>`
+  - 명세 패턴: `Specification<T>`
+  - Unit of Work: `UnitOfWork`
+  - 페이지네이션: `Page<T>`, `PageRequest`
+
+## SOLID 원칙 - Core 도메인 특화 적용
+Core 도메인은 라이브러리 역할을 수행하므로 SOLID 원칙을 엄격히 준수해야 합니다.
+
+### 단일 책임 원칙 (Single Responsibility Principle)
+- 각 클래스는 하나의 명확한 책임만 가져야 함
+- 공통 유틸리티도 목적별로 분리 (예: `StringUtils`, `DateUtils`, `ValidationUtils`)
+- 책임 범위는 명확한 JavaDoc으로 문서화
+- 구현 예시:
+  ```java
+  // 잘된 예: 명확한 책임 분리
+  public final class DateUtils { /* 날짜 관련 메서드만 포함 */ }
+  public final class StringUtils { /* 문자열 관련 메서드만 포함 */ }
+  
+  // 피해야 할 예: 여러 책임이 혼합됨
+  public final class CommonUtils { /* 날짜, 문자열, 숫자 등 모든 유틸리티 혼합 */ }
+  ```
+
+### 개방/폐쇄 원칙 (Open/Closed Principle)
+- 확장에는 열려있고 수정에는 닫혀있는 설계
+- 인터페이스 기반 설계로 구현체 추가 용이하게 함
+- 구성(Composition)과 전략(Strategy) 패턴 활용
+- 구현 예시:
+  ```java
+  // 인터페이스 정의 (확장 포인트)
+  public interface FileStorage {
+      void store(String filename, byte[] content);
+      byte[] retrieve(String filename);
+  }
+  
+  // 구현체 (새 구현체 추가가 쉬움)
+  public class S3FileStorage implements FileStorage { /* AWS S3 구현 */ }
+  public class LocalFileStorage implements FileStorage { /* 로컬 파일시스템 구현 */ }
+  ```
+
+### 리스코프 치환 원칙 (Liskov Substitution Principle)
+- 상위 타입의 객체를 하위 타입의 객체로 치환해도 프로그램이 정상 동작해야 함
+- 계약(Contract)에 의한 설계 준수
+- 예외와 사전/사후 조건이 일관되게 유지
+- 구현 예시:
+  ```java
+  // 기본 명세
+  public interface Repository<T> {
+      // 계약: id로 엔티티를 찾거나 예외를 던짐
+      T findById(ID id) throws EntityNotFoundException;
+  }
+  
+  // 계약을 준수하는 구현체
+  public class JpaRepository<T> implements Repository<T> {
+      @Override
+      public T findById(ID id) throws EntityNotFoundException {
+          // 동일한 계약 준수: 찾지 못하면 예외 발생
+      }
+  }
+  ```
+
+### 인터페이스 분리 원칙 (Interface Segregation Principle)
+- 클라이언트는 사용하지 않는 메서드에 의존하지 않아야 함
+- 큰 인터페이스보다 작고 집중된 여러 인터페이스 선호
+- 역할별 인터페이스 분리
+- 구현 예시:
+  ```java
+  // 분리된 인터페이스
+  public interface Reader<T> {
+      T read(ID id);
+  }
+  
+  public interface Writer<T> {
+      void write(T entity);
+  }
+  
+  // 필요한 인터페이스만 구현/사용
+  public class ReadOnlyRepository<T> implements Reader<T> { /* 읽기만 구현 */ }
+  public class WriteOnlyRepository<T> implements Writer<T> { /* 쓰기만 구현 */ }
+  public class ReadWriteRepository<T> implements Reader<T>, Writer<T> { /* 둘 다 구현 */ }
+  ```
+
+### 의존성 역전 원칙 (Dependency Inversion Principle)
+- 고수준 모듈은 저수준 모듈에 의존하지 않고, 둘 다 추상화에 의존해야 함
+- 구체적인 구현보다 인터페이스/추상 클래스에 의존
+- 의존성 주입을 통한 결합도 감소
+- 구현 예시:
+  ```java
+  // 고수준 모듈이 추상화에 의존 (의존성 역전)
+  public class NotificationService {
+      private final MessageSender messageSender; // 인터페이스에 의존
+      
+      public NotificationService(MessageSender messaghis.mer = mer; // DI
+      }
+  }
+  
+  /에 의존
+ er {
+ e message);
+  }
+  
+  //ilSendessageSender { /* 이메일 전송 구현 */ }
+  public class SmsSender implements MessageSender { /* SMS 전송 구현 */ }
+  ```
+
+## 클린 아키텍처 적용
+- **공통 인터페이스**:
+  - 유스케이스 공통 인터페이스: `UseCase<I, O>`
+  - 명령/조회 분리: `Command<T>`, `Query<T>`
+  - 포트 인터페이스: `InPort<I, O>`, `OutPort<I, O>`
+  
+- **의존성 주입 인프라**:
+  - 스프링 설정: `ApplicationConfig`
+  - 트랜잭션 관리: `TransactionManager`
+  - 예외 변환: `ExceptionTranslator`
+
+## 네이밍 컨벤션
+### 클래스
+- 공통 모델: `BaseEntity`, `AuditableEntity`
+- 공통 서비스: `FileService`, `NotificationService`
+- 공통 유틸리티: `StringUtils`, `DateUtils`
+- 공통 설정: `SecurityConfig`, `WebConfig`
+- 공통 포트: `FileStoragePort`, `NotificationPort`
+- 공통 어댑터: `S3FileStorageAdapter`, `EmailNotificationAdapter`
+
+### 메서드
+- 유틸리티: `isEmpty`, `formatDate`
+- 서비스: `uploadFile`, `sendNotification`
+- 검증: `validateEmail`, `validatePhone`
+
+### 변수
+- 상수: `MAX_FILE_SIZE`, `ALLOWED_EXTENSIONS`
+- 설정값: `uploadPath`, `notificationUrl`
+- 유틸리티: `dateFormat`, `timeZone`
+
+## 공통 컴포넌트 설계 원칙
+1. **높은 응집도, 낮은 결합도**:
+   - 각 컴포넌트는 단일 책임 원칙을 준수해야 함
+   - 컴포넌트 간 의존성은 인터페이스를 통해서만 이루어져야 함
+   - 하위 도메인 의존성을 최소화 (의존성 역전 원칙 적용)
+
+2. **확장성과 호환성**:
+   - 미래 요구사항 변화를 고려한 유연한 설계
+   - 버전 호환성 유지 (하위 호환성 중요)
+   - 확장 지점 명확히 정의 (SPI 패턴 활용)
+
+3. **명확한 문서화**:
+   - 모든 공용 API는 명확한 JavaDoc 주석 필수
+   - 예제 코드와 사용 사례 포함
+   - 설정 옵션과 커스터마이징 방법 문서화
+
+4. **재사용 컴포넌트 유형**:
+   - 인프라 컴포넌트: 로깅, 캐싱, 메시징, 파일 처리
+   - 도메인 컴포넌트: 공통 값 객체, 기본 엔티티, ID 생성
+   - 유틸리티: 문자열 처리, 날짜 변환, 검증, 암호화
+   - 패턴 구현체: 레포지토리, 명세, 이벤트 발행
+
+## 테스트
+- 유틸리티 테스트: `*UtilsTest.java`
+- 서비스 테스트: `*ServiceTest.java`
+- 통합 테스트: `*IntegrationTest.java`
+- 아키텍처 테스트: `HexagonalArchitectureTest.java`
+
+## 공통 기능
+- 파일 업로드/다운로드
+- 이메일 발송
+- 알림 발송
+- 공통 유틸리티
+- 보안 설정
+
+## Core 도메인 보완 사항
+1. **버전 관리 전략**:
+   - 하위 호환성 보장을 위한 버전 관리 정책
+   - 인터페이스 변경 시 명확한 마이그레이션 패스 제공
+   - 사용 중단(Deprecation) 정책 및 대체 API 안내
+
+2. **공용 API 문서화 강화**:
+   - API 사용 예제 포함한 상세 JavaDoc
+   - 기술적 제약사항 및 성능 특성 명시
+   - 오류 처리 및 예외 상황 문서화
+
+3. **도메인 이벤트 표준화**:
+   - 이벤트 구조 및 메타데이터 표준화
+   - 이벤트 발행 및 구독 패턴 통일
+   - 이벤트 순서 및 멱등성 보장 메커니즘
+
+4. **공통 예외 처리 전략**:
+   - 예외 계층 구조 정의
+   - 도메인별 특화 예외와 공통 예외 구분
+   - 예외 변환 및 처리 가이드라인
+
+## Java 21 기준 및 신뢰할 수 있는 정보원
+### Java 21 기능 활용
+- 코드 생성 및 검색은 **Java 21** 버전을 기준으로 수행
+- 다음 Java 21 기능 적극 활용:
+  - 가상 스레드(Virtual Threads) - 비동기 컴포넌트 구현
+  - 패턴 매칭(Pattern Matching for switch) - 다형성 처리 단순화
+  - 레코드 패턴(Record Patterns) - 불변 값 객체 정의
+  - 문자열 템플릿(String Templates) - 포맷팅 유틸리티
+  - 스코프 값(Scoped Values) - 컨텍스트 전파
+  - 외부 함수 및 메모리 API - 성능 최적화 컴포넌트
+
+### 코어 라이브러리 관련 신뢰할 수 있는 정보원
+1. **공식 문서**:
+   - [Java 21 공식 문서](https://docs.oracle.com/en/java/javase/21/)
+   - [Spring Framework 공식 문서](https://docs.spring.io/spring-framework/reference/index.html)
+   - [JUnit 5 사용자 가이드](https://junit.org/junit5/docs/current/user-guide/)
+
+2. **라이브러리 설계 모범 사례**:
+   - [Effective Java (Joshua Bloch)](https://www.oreilly.com/library/view/effective-java-3rd/9780134686097/)
+   - [Java Design Patterns](https://java-design-patterns.com/)
+   - [Spring 프로젝트 구조](https://github.com/spring-projects)
+
+3. **유틸리티 라이브러리 참고**:
+   - [Apache Commons](https://commons.apache.org/)
+   - [Google Guava](https://github.com/google/guava)
+   - [Vavr](https://www.vavr.io/)
