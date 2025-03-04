@@ -2,6 +2,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useNewsStore } from '@stores/news'
 import { useEmojiStore } from '@stores/emoji'
+import LoginButton from '@components/LoginButton.vue'
 
 // 뉴스 스토어 사용
 const newsStore = useNewsStore()
@@ -97,15 +98,6 @@ onMounted(() => {
   }, 500)
 })
 
-// 날짜 포맷팅 함수
-function formatDate(dateString: string) {
-  return new Date(dateString).toLocaleDateString('ko-KR', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  })
-}
-
 // 댓글 수 표시 (목업 데이터)
 function getCommentCount(articleId: string) {
   return Math.floor(Math.random() * 30)
@@ -114,6 +106,7 @@ function getCommentCount(articleId: string) {
 
 <template>
   <div class="ny-times-home">
+    <LoginButton />
     <!-- 헤더 섹션 -->
     <div class="header-section">
       <h1 class="main-title">포츈 매트릭스 추천 뉴스</h1>
@@ -143,15 +136,17 @@ function getCommentCount(articleId: string) {
               <p class="news-abstract">{{ mainNews.abstract }}</p>
               
               <!-- 관련 주식 정보 -->
-              <div class="stock-badges">
-                <div v-for="stock in mainNews.relatedStocks" :key="stock.ticker" 
-                     :class="['stock-badge', stock.trend === 'up' ? 'trend-up' : 'trend-down']">
-                  <span class="stock-name">{{ stock.name }}</span>
-                  <span class="stock-ticker">{{ stock.ticker }}</span>
-                  <span class="stock-trend">
-                    <i v-if="stock.trend === 'up'" class="trend-icon">{{ emojiStore.getEmoji('indicators', 'up') }}</i>
-                    <i v-else class="trend-icon">{{ emojiStore.getEmoji('indicators', 'down') }}</i>
-                  </span>
+              <div class="stock-analysis">
+                <h4 class="stock-analysis-title">AI 분석</h4>
+                <div class="stock-list">
+                  <div v-for="stock in mainNews.relatedStocks" :key="stock.ticker" 
+                       :class="['stock-item', stock.trend === 'up' ? 'trend-up' : 'trend-down']">
+                    <span class="stock-name">{{ stock.name }}</span>
+                    <span class="trend-icon">
+                      <i v-if="stock.trend === 'up'" class="trend-icon">{{ emojiStore.getEmoji('indicators', 'up') }}</i>
+                      <i v-else class="trend-icon">{{ emojiStore.getEmoji('indicators', 'down') }}</i>
+                    </span>
+                  </div>
                 </div>
               </div>
               
@@ -166,85 +161,51 @@ function getCommentCount(articleId: string) {
                   <span class="comment-icon">{{ emojiStore.getEmoji('communication', 'comment') }}</span>
                   <span class="comment-count">{{ getCommentCount(mainNews.id) }}</span>
                 </div>
-                
-                <button @click="analyzeWithAI(mainNews.id)" class="ai-analysis-button" 
-                        :class="{ 'ai-analysis-active': aiAnalysisResult.has(mainNews.id) }">
-                  <span class="ai-icon">{{ emojiStore.getEmoji('finance', 'chart') }}</span>
-                  <span>AI 시황 분석</span>
-                </button>
               </div>
-              
-              <!-- AI 분석 결과 -->
-              <div v-if="aiAnalysisResult.has(mainNews.id)" class="ai-analysis-result">
-                <div class="ai-analysis-header">
-                  <span class="ai-label">AI 시황 분석</span>
-                </div>
-                <p class="ai-analysis-content">{{ aiAnalysisResult.get(mainNews.id) }}</p>
-              </div>
-              
-              <p class="news-meta">
-                {{ mainNews.byline }} | {{ formatDate(mainNews.published_date) }}
-              </p>
             </div>
           </div>
           
           <!-- 보조 뉴스 (작은 카드 4개) -->
-          <div v-for="(article, index) in secondaryNews" 
-               :key="index" 
-               class="secondary-news-card">
-            <div class="news-image" v-if="article.multimedia && article.multimedia.length > 0">
-              <img :src="article.multimedia[0].url" :alt="article.title">
-            </div>
-            <div class="news-content">
-              <a :href="article.url" target="_blank" rel="noopener" class="news-link">
-                <h3 class="news-title">{{ article.title }}</h3>
-              </a>
-              <div class="news-section-tag small" :style="{ backgroundColor: newsSections[getNewsSection(article)].color }">
-                {{ newsSections[getNewsSection(article)].name }}
-              </div>
-              <p class="news-abstract">{{ article.abstract }}</p>
-              
-              <!-- 관련 주식 정보 (간소화된 버전) -->
-              <div class="stock-badges compact">
-                <div v-for="stock in article.relatedStocks.slice(0, 2)" :key="stock.ticker" 
-                     :class="['stock-badge', stock.trend === 'up' ? 'trend-up' : 'trend-down']">
-                  <span class="stock-name">{{ stock.name }}</span>
-                  <span class="stock-trend">
-                    <i v-if="stock.trend === 'up'" class="trend-icon">{{ emojiStore.getEmoji('indicators', 'up') }}</i>
-                    <i v-else class="trend-icon">{{ emojiStore.getEmoji('indicators', 'down') }}</i>
-                  </span>
+          <div class="secondary-news-container">
+            <div v-for="(article, index) in secondaryNews" 
+                 :key="index" 
+                 class="secondary-news-card">
+              <div class="news-content">
+                <a :href="article.url" target="_blank" rel="noopener" class="news-link">
+                  <h3 class="news-title">{{ article.title }}</h3>
+                </a>
+                <div class="news-section-tag small" :style="{ backgroundColor: newsSections[getNewsSection(article)].color }">
+                  {{ newsSections[getNewsSection(article)].name }}
                 </div>
-              </div>
-              
-              <div class="article-interaction">
-                <button @click="toggleHelpful(article.id)" class="helpful-button compact">
-                  <span class="helpful-icon">{{ emojiStore.getEmoji('reaction', 'helpful') }}</span>
-                  <span class="helpful-count">{{ helpfulCounts.get(article.id) || 0 }}</span>
-                </button>
+                <p class="news-abstract">{{ article.abstract }}</p>
                 
-                <div class="comment-counter compact">
-                  <span class="comment-icon">{{ emojiStore.getEmoji('communication', 'comment') }}</span>
-                  <span class="comment-count">{{ getCommentCount(article.id) }}</span>
+                <!-- 관련 주식 정보 (간소화된 버전) -->
+                <div class="stock-analysis">
+                  <h4 class="stock-analysis-title">AI 분석</h4>
+                  <div class="stock-list">
+                    <div v-for="stock in article.relatedStocks" :key="stock.ticker" 
+                         :class="['stock-item', stock.trend === 'up' ? 'trend-up' : 'trend-down']">
+                      <span class="stock-name">{{ stock.name }}</span>
+                      <span class="trend-icon">
+                        <i v-if="stock.trend === 'up'" class="trend-icon">{{ emojiStore.getEmoji('indicators', 'up') }}</i>
+                        <i v-else class="trend-icon">{{ emojiStore.getEmoji('indicators', 'down') }}</i>
+                      </span>
+                    </div>
+                  </div>
                 </div>
                 
-                <button @click="analyzeWithAI(article.id)" class="ai-analysis-button compact"
-                        :class="{ 'ai-analysis-active': aiAnalysisResult.has(article.id) }">
-                  <span class="ai-icon">{{ emojiStore.getEmoji('finance', 'chart') }}</span>
-                  <span>AI 분석</span>
-                </button>
-              </div>
-              
-              <!-- AI 분석 결과 -->
-              <div v-if="aiAnalysisResult.has(article.id)" class="ai-analysis-result compact">
-                <div class="ai-analysis-header">
-                  <span class="ai-label">AI 시황 분석</span>
+                <div class="article-interaction">
+                  <button @click="toggleHelpful(article.id)" class="helpful-button compact">
+                    <span class="helpful-icon">{{ emojiStore.getEmoji('reaction', 'helpful') }}</span>
+                    <span class="helpful-count">{{ helpfulCounts.get(article.id) || 0 }}</span>
+                  </button>
+                  
+                  <div class="comment-counter compact">
+                    <span class="comment-icon">{{ emojiStore.getEmoji('communication', 'comment') }}</span>
+                    <span class="comment-count">{{ getCommentCount(article.id) }}</span>
+                  </div>
                 </div>
-                <p class="ai-analysis-content">{{ aiAnalysisResult.get(article.id) }}</p>
               </div>
-              
-              <p class="news-meta">
-                {{ article.byline }} | {{ formatDate(article.published_date) }}
-              </p>
             </div>
           </div>
         </div>
@@ -305,10 +266,20 @@ function getCommentCount(articleId: string) {
 
 /* 뉴스 그리드 레이아웃 */
 .news-grid {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 40px;
+}
+
+.main-news-card {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.secondary-news-container {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 20px;
-  margin-bottom: 40px;
 }
 
 .main-news-card {
@@ -318,6 +289,7 @@ function getCommentCount(articleId: string) {
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  gap: 0;
 }
 
 .secondary-news-card {
@@ -328,20 +300,25 @@ function getCommentCount(articleId: string) {
   overflow: hidden;
   box-shadow: 0 2px 10px rgba(0,0,0,0.05);
   height: 100%;
+  padding: 20px;
+  margin-bottom: 32px;
+}
+
+.secondary-news-card:nth-last-child(-n+2) {
+  margin-bottom: 0;
 }
 
 .news-image {
   position: relative;
   overflow: hidden;
+  margin: 0;
+  padding: 0;
 }
 
 .main-news-card .news-image {
   flex: 0 0 40%;
   max-height: 350px;
-}
-
-.secondary-news-card .news-image {
-  height: 150px;
+  border-radius: 8px 0 0 8px;
 }
 
 .news-image img {
@@ -349,6 +326,7 @@ function getCommentCount(articleId: string) {
   height: 100%;
   object-fit: cover;
   transition: transform 0.3s;
+  display: block;
 }
 
 .news-card:hover .news-image img {
@@ -356,10 +334,13 @@ function getCommentCount(articleId: string) {
 }
 
 .news-content {
-  padding: 20px;
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
+  padding: 24px;
+  flex: 1;
+}
+
+.main-news-card .news-content {
+  padding: 24px;
+  flex: 1;
 }
 
 .news-title {
@@ -394,12 +375,6 @@ function getCommentCount(articleId: string) {
 .secondary-news-card .news-abstract {
   -webkit-line-clamp: 2;
   font-size: 14px;
-}
-
-.news-meta {
-  font-size: 12px;
-  color: #888;
-  margin-top: auto;
 }
 
 /* 도움돼요 버튼과 댓글 카운터 스타일 */
@@ -576,7 +551,8 @@ function getCommentCount(articleId: string) {
   
   .main-news-card .news-image {
     flex: none;
-    height: 200px;
+    height: 250px;
+    border-radius: 8px 8px 0 0;
   }
   
   .news-title {
@@ -585,12 +561,8 @@ function getCommentCount(articleId: string) {
 }
 
 @media (max-width: 768px) {
-  .news-grid {
+  .secondary-news-container {
     grid-template-columns: 1fr;
-  }
-  
-  .secondary-news-card .news-image {
-    height: 180px;
   }
   
   .section-title {
@@ -603,6 +575,18 @@ function getCommentCount(articleId: string) {
   
   .sub-header {
     font-size: 16px;
+  }
+  
+  .main-news-card {
+    margin-bottom: 24px;
+  }
+
+  .secondary-news-card {
+    margin-bottom: 24px;
+  }
+
+  .secondary-news-card:last-child {
+    margin-bottom: 0;
   }
 }
 
@@ -636,7 +620,7 @@ function getCommentCount(articleId: string) {
   }
 }
 
-/* 뉴스 섹션 태그 스타일 */
+/* 뉴스 섹션 태그 스타일 수정 */
 .news-section-tag {
   display: inline-block;
   padding: 4px 8px;
@@ -645,87 +629,77 @@ function getCommentCount(articleId: string) {
   font-size: 12px;
   font-weight: 500;
   margin-bottom: 10px;
+  width: fit-content;
+  max-width: 100px;
+  text-align: center;
 }
 
 .news-section-tag.small {
   font-size: 10px;
   padding: 3px 6px;
+  max-width: 80px;
 }
 
-/* AI 분석 버튼 스타일 */
-.ai-analysis-button {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background-color: #f0f7ff;
-  border: 1px solid #b3d7ff;
-  border-radius: 20px;
-  padding: 8px 16px;
-  font-size: 14px;
-  color: #0066cc;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.ai-analysis-button:hover {
-  background-color: #e1f0ff;
-  border-color: #80bdff;
-}
-
-.ai-analysis-button.compact {
-  padding: 5px 10px;
-  font-size: 12px;
-}
-
-.ai-analysis-active {
-  background-color: #e1f0ff;
-  border-color: #80bdff;
-  font-weight: 500;
-}
-
-.ai-icon {
-  font-size: 16px;
-}
-
-/* AI 분석 결과 스타일 */
-.ai-analysis-result {
+/* 주식 분석 스타일 수정 */
+.stock-analysis {
   margin: 15px 0;
-  background-color: #f0f7ff;
-  border: 1px solid #b3d7ff;
-  border-radius: 8px;
-  overflow: hidden;
+  padding: 0;
 }
 
-.ai-analysis-result.compact {
-  margin: 10px 0;
-  font-size: 13px;
+.stock-analysis-title {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #333;
 }
 
-.ai-analysis-header {
-  background-color: #e1f0ff;
-  padding: 8px 12px;
-  border-bottom: 1px solid #b3d7ff;
+.stock-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
-.ai-label {
-  font-weight: 500;
-  color: #0066cc;
+.stock-item {
   display: flex;
   align-items: center;
   gap: 6px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 13px;
 }
 
-.ai-label::before {
-  content: '🤖';
+.secondary-news-card .stock-analysis {
+  margin: 10px 0;
 }
 
-.ai-analysis-content {
-  padding: 12px;
-  color: #333;
-  line-height: 1.4;
+.secondary-news-card .stock-analysis-title {
+  font-size: 12px;
+  margin-bottom: 6px;
 }
 
-.ai-analysis-result.compact .ai-analysis-content {
-  padding: 8px;
+.secondary-news-card .stock-item {
+  font-size: 11px;
+  padding: 3px 6px;
+}
+
+/* 섹션 태그 색상 */
+.news-section-tag[data-section="economic-trends"] {
+  background-color: #4CAF50;
+}
+
+.news-section-tag[data-section="business-industry"] {
+  background-color: #2196F3;
+}
+
+.news-section-tag[data-section="financial-markets"] {
+  background-color: #FF9800;
+}
+
+.news-section-tag[data-section="policy-regulation"] {
+  background-color: #9C27B0;
+}
+
+.news-section-tag[data-section="global-economy"] {
+  background-color: #F44336;
 }
 </style>

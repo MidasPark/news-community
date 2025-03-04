@@ -35,7 +35,7 @@ export const useNewsStore = defineStore('news', {
         published_date: '2023-08-15T09:00:00Z',
         multimedia: [
           {
-            url: 'https://source.unsplash.com/random/800x600?economy',
+            url: 'https://static01.nyt.com/images/2025/03/03/multimedia/03trump-header-lphq/03trump-header-lphq-threeByTwoMediumAt2X.jpg?format=pjpg&quality=75&auto=webp&disable=upscale',
             format: 'superJumbo'
           }
         ],
