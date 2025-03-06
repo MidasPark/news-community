@@ -4,6 +4,7 @@ import { useNewsStore } from '@stores/news'
 import { useEmojiStore } from '@stores/emoji'
 import LoginButton from '@components/LoginButton.vue'
 
+
 // 뉴스 스토어 사용
 const newsStore = useNewsStore()
 // 이모티콘 스토어 사용

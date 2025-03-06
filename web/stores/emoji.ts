@@ -7,58 +7,29 @@ interface EmojiCategory {
 
 export const useEmojiStore = defineStore('emoji', {
   state: () => ({
-    categories: {
+    emojis: {
+      indicators: {
+        up: '📈',
+        down: '📉'
+      },
       reaction: {
-        title: '반응',
-        emojis: {
-          helpful: '👍',
-          like: '❤️',
-          celebrate: '🎉',
-          interesting: '🤔',
-          insightful: '💡',
-        }
+        helpful: '👍'
       },
       communication: {
-        title: '소통',
-        emojis: {
-          comment: '💬',
-          message: '✉️',
-          announcement: '📢',
-          question: '❓',
-        }
-      },
-      indicators: {
-        title: '지표',
-        emojis: {
-          up: '▲',
-          down: '▼',
-          increase: '📈',
-          decrease: '📉',
-          stable: '📊',
-        }
-      },
-      finance: {
-        title: '금융',
-        emojis: {
-          money: '💰',
-          currency: '💲',
-          chart: '📊',
-          stock: '📈',
-        }
+        comment: '💬'
       }
-    } as Record<string, EmojiCategory>
+    }
   }),
-  
   getters: {
-    getEmoji: (state) => (category: string, name: string): string => {
-      return state.categories[category]?.emojis[name] || '❓'
+    getEmoji: (state) => (category, type) => {
+      return state.emojis[category]?.[type] || ''
     },
     
     getAllEmojis: (state) => (): Record<string, Record<string, string>> => {
       const result: Record<string, Record<string, string>> = {}
       
-      Object.keys(state.categories).forEach(category => {
-        result[category] = state.categories[category]?.emojis || {}
+      Object.keys(state.emojis).forEach(category => {
+        result[category] = state.emojis[category] || {}
       })
       
       return result

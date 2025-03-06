@@ -3,7 +3,10 @@
   "compilerOptions": {
     "paths": {
       "~/*": ["./*"],
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      "@stores/*": ["./stores/*"],
+      "@components/*": ["./components/*"],
+      "@plugins/*": ["./plugins/*"],
     }
   }
 }

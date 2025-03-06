@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { auth } from '@/plugins/firebase'
+import { auth } from '@plugins/firebase'
 import { onAuthStateChanged } from 'firebase/auth'
 
 const isLoggedIn = ref(false)
