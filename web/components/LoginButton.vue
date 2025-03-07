@@ -1,19 +1,20 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { auth } from '@plugins/firebase'
 import { onAuthStateChanged } from 'firebase/auth'
 
 const isLoggedIn = ref(false)
 const loginModal = ref(null)
 
+const nuxtApp = useNuxtApp()
+
 onMounted(() => {
-  onAuthStateChanged(auth, (user) => {
+  onAuthStateChanged(nuxtApp.$auth, (user) => {
     isLoggedIn.value = !!user
   })
 })
 
 const handleLoginClick = () => {
-  loginModal.value?.openModal()
+ // loginModal.value?.openModal()
 }
 </script>
 

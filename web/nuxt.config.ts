@@ -10,6 +10,10 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
   ],
 
+  plugins: [
+    '~/plugins/firebase'
+  ],
+
   runtimeConfig: {
     public: {
       firebaseApiKey: process.env.FIREBASE_API_KEY,

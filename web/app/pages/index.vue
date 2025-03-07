@@ -15,9 +15,13 @@ const loading = ref(true)
 const aiAnalysisLoading = ref(false)
 
 // 스토어에서 최신 뉴스 5개만 가져오기
-const featuredNews = computed(() => newsStore.getAllArticles.slice(0, 5))
+const featuredNews = computed(() => {
+  newsStore.fetchArticles() // 기사를 가져오는 함수 호출
+  const articles = newsStore.articles || [] // 상태에서 기사를 가져옴
+  return articles.slice(0, 5)
+})
 const mainNews = computed(() => featuredNews.value[0] || null)
-const secondaryNews = computed(() => featuredNews.value.slice(1, 5) || [])
+const secondaryNews = computed(() => featuredNews.value.slice(1, 5))
 
 // AI 분석 결과
 const aiAnalysisResult = ref(new Map())

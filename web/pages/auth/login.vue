@@ -1,14 +1,16 @@
-<script setup lang="ts">
-import { auth } from '@/plugins/firebase'
+<!-- <script setup lang="ts">
 import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth'
 import { useRouter } from 'vue-router'
+
+const nuxtApp = useNuxtApp()
+const { $auth } = nuxtApp
 
 const router = useRouter()
 
 const handleGoogleLogin = async () => {
   try {
     const provider = new GoogleAuthProvider()
-    const result = await signInWithPopup(auth, provider)
+    const result = await signInWithPopup($auth, provider)
     const credential = GoogleAuthProvider.credentialFromResult(result)
     if (credential?.accessToken) {
       // 토큰을 로컬 스토리지에 저장
@@ -91,4 +93,4 @@ p {
   width: 24px;
   height: 24px;
 }
-</style> 
+</style>  -->

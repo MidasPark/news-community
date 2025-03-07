@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { auth } from '@/plugins/firebase'
+import { auth } from '~/app/plugins/firebase'
 import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth'
 
 const isVisible = ref(false)

@@ -12,12 +12,14 @@ useSeoMeta({
   twitterCreator: '@nuxt_js',
   twitterCard: 'summary_large_image',
 })
+
 </script>
 
 <template>
   <AppHeader />
   <NuxtPage />
 </template>
+
 
 <style lang="postcss">
 body {

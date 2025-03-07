@@ -1,7 +1,3 @@
-<script setup lang="ts">
-import { feedsInfo } from '~~/utils/api'
-</script>
-
 <template>
   <header class="app-header">
     <nav class="main-nav">

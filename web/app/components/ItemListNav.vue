@@ -1,17 +1,22 @@
 <script setup lang="ts">
 const props = defineProps<{
   feed: string
-  page: number
-  maxPage: number
+  page: number | null
+  maxPage: number | null
 }>()
 
-const hasMore = computed(() => props.page < props.maxPage)
+const hasMore = computed(() => {
+  if (props.page === null || props.maxPage === null) {
+    return false
+  }
+  return props.page < props.maxPage
+})
 </script>
 
 <template>
   <div class="news-list-nav">
     <NuxtLink
-      v-if="page > 1"
+      v-if="page !== null && page > 1"
       :to="`/${feed}/${page - 1}`"
     >
       &lt; prev
@@ -20,7 +25,7 @@ const hasMore = computed(() => props.page < props.maxPage)
       v-else
       class="disabled"
     >&lt; prev</span>
-    <span class="page">{{ page }} / {{ maxPage }}</span>
+    <span class="page">{{ page !== null ? page : '-' }} / {{ maxPage !== null ? maxPage : '-' }}</span>
     <NuxtLink
       v-if="hasMore"
       :to="`/${feed}/${page + 1}`"
