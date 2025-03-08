@@ -5,13 +5,13 @@ alwaysApply: false
 ---
 # News 도메인 컨벤션
 
-> 참고: 이 문서는 모든 도메인에 공통적으로 적용되는 [공통 아키텍처 컨벤션](/.cursor/rules/common-conventions.mdc)을 기반으로 합니다.
+> 참고: 이 문서는 모든 도메인에 공통적으로 적용되는 [공통 아키텍처 컨벤션](mdc:.cursor/rules/common-conventions.mdc)을 기반으로 합니다.
 
 ## 패키지 구조
-- `com.kab.news.domain`: 뉴스 도메인 모델
-- `com.kab.news.application`: 뉴스 서비스 로직
-- `com.kab.news.infrastructure`: 외부 시스템 연동
-- `com.kab.news.interfaces`: API 엔드포인트
+- `com.salt.news.domain`: 뉴스 도메인 모델
+- `com.salt.news.application`: 뉴스 서비스 로직
+- `com.salt.news.infrastructure`: 외부 시스템 연동
+- `com.salt.news.interfaces`: API 엔드포인트
 
 ## DDD 패턴 적용 - News 도메인 특화
 - **전략적 설계**:
@@ -33,100 +33,26 @@ alwaysApply: false
 - 뉴스 생성, 조회, 검색, 추천 기능은 별도 클래스로 분리
 - 콘텐츠와 메타데이터 관리 책임 분리
 - 댓글과 뉴스 관리 로직 분리
-- 구현 예시:
-  ```java
-  // 명확한 책임 분리
-  public class NewsCreationService { /* 뉴스 생성 로직 */ }
-  public class NewsRetrievalService { /* 뉴스 조회 로직 */ }
-  public class NewsSearchService { /* 뉴스 검색 로직 */ }
-  public class NewsRecommendationService { /* 뉴스 추천 로직 */ }
-  ```
 
 ### 개방/폐쇄 원칙 (Open/Closed Principle)
 - 다양한 콘텐츠 타입 확장에 열려있는 구조
 - 콘텐츠 렌더링 방식 확장 가능
 - 검색 알고리즘 변경 없이 새로운 검색 기능 추가
-- 구현 예시:
-  ```java
-  // 콘텐츠 처리 전략 패턴
-  public interface ContentProcessor {
-      ProcessedContent process(RawContent content);
-  }
-  
-  // 다양한 콘텐츠 처리기
-  public class TextContentProcessor implements ContentProcessor { /* 텍스트 처리 */ }
-  public class ImageContentProcessor implements ContentProcessor { /* 이미지 처리 */ }
-  public class VideoContentProcessor implements ContentProcessor { /* 비디오 처리 */ }
-  ```
 
 ### 리스코프 치환 원칙 (Liskov Substitution Principle)
 - 모든 콘텐츠 타입은 기본 콘텐츠 계약 준수
 - 특수 콘텐츠 타입도 기본 조회/검색 로직과 호환
 - 뉴스와 댓글의 일관된 상태 변경 규칙
-- 구현 예시:
-  ```java
-  // 기본 콘텐츠 계약
-  public interface Content {
-      String getId();
-      String getTitle();
-      String getBody();
-      LocalDateTime getCreatedAt();
-  }
-  
-  // 계약을 준수하는 다양한 구현체
-  public class NewsContent implements Content { /* 뉴스 구현 */ }
-  public class PremiumNewsContent implements Content { /* 프리미엄 뉴스 구현 */ }
-  ```
 
 ### 인터페이스 분리 원칙 (Interface Segregation Principle)
 - 읽기/쓰기 작업 인터페이스 분리
 - 검색과 필터링 인터페이스 분리
 - 콘텐츠 메타데이터 접근 인터페이스 최소화
-- 구현 예시:
-  ```java
-  // 분리된 읽기/쓰기 인터페이스
-  public interface NewsReader {
-      News findById(String id);
-      List<News> findByCategory(String category);
-  }
-  
-  public interface NewsWriter {
-      void save(News news);
-      void update(News news);
-  }
-  
-  // 검색 전용 인터페이스
-  public interface NewsSearcher {
-      SearchResult search(SearchCriteria criteria);
-  }
-  ```
 
 ### 의존성 역전 원칙 (Dependency Inversion Principle)
 - 뉴스 서비스는 구체적인 저장소나 검색 엔진에 직접 의존하지 않음
 - 외부 시스템(검색 엔진, 추천 시스템)은 인터페이스로 추상화
 - 모든 인프라 종속성은 인터페이스를 통해 주입
-- 구현 예시:
-  ```java
-  // 고수준 뉴스 서비스
-  public class NewsService {
-      private final NewsRepository newsRepository;
-      private final SearchEngine searchEngine;
-      private final RecommendationEngine recommendationEngine;
-      
-      // 인터페이스 기반 DI
-      public NewsService(NewsRepository newsRepository, 
-                       SearchEngine searchEngine,
-                       RecommendationEngine recommendationEngine) {
-          this.newsRepository = newsRepository;
-          this.searchEngine = searchEngine;
-          this.recommendationEngine = recommendationEngine;
-      }
-  }
-  
-  // 인터페이스 정의
-  public interface NewsRepository { /* 뉴스 저장소 인터페이스 */ }
-  public interface SearchEngine { /* 검ic intommende { /* 추천 엔진 인터페이스 */ }
-  `- Newsws`, `- 서비스: `NewsService`, ` `NewsategoryController`
 - 리포지토리: `NewsRepository`, `CommentRepository`
 - 유스케이스: `CreateNewsUseCase`, `FindNewsByCategoryUseCase`
 - 포트: `NewsRepository`, `NewsEventPublisher`
@@ -222,16 +148,16 @@ alwaysApply: false
 
 ### 콘텐츠 관리 관련 신뢰할 수 있는 정보원
 1. **공식 문서**:
-   - [Spring Framework 공식 문서](https://docs.spring.io/spring-framework/reference/index.html)
-   - [Spring Data JPA 문서](https://docs.spring.io/spring-data/jpa/docs/current/reference/html/)
-   - [Elasticsearch 가이드](https://www.elastic.co/guide/index.html)
+   - [Spring Framework 공식 문서](mdc:https:/docs.spring.io/spring-framework/reference/index.html)
+   - [Spring Data JPA 문서](mdc:https:/docs.spring.io/spring-data/jpa/docs/current/reference/html)
+   - [Elasticsearch 가이드](mdc:https:/www.elastic.co/guide/index.html)
 
 2. **콘텐츠 관리 모범 사례**:
-   - [Baeldung Spring 가이드](https://www.baeldung.com/)
-   - [마틴 파울러 블로그](https://martinfowler.com/)
-   - [InfoQ 아키텍처 아티클](https://www.infoq.com/architecture-design/)
+   - [Baeldung Spring 가이드](mdc:https:/www.baeldung.com)
+   - [마틴 파울러 블로그](mdc:https:/martinfowler.com)
+   - [InfoQ 아키텍처 아티클](mdc:https:/www.infoq.com/architecture-design)
 
 3. **콘텐츠 플랫폼 참고**:
-   - [Spring Content](https://paulcwarren.github.io/spring-content/)
-   - [Apache Jackrabbit](https://jackrabbit.apache.org/jcr/index.html)
-   - [CMIS 표준](https://docs.oasis-open.org/cmis/CMIS/v1.1/CMIS-v1.1.html)
+   - [Spring Content](mdc:https:/paulcwarren.github.io/spring-content)
+   - [Apache Jackrabbit](mdc:https:/jackrabbit.apache.org/jcr/index.html)
+   - [CMIS 표준](mdc:https:/docs.oasis-open.org/cmis/CMIS/v1.1/CMIS-v1.1.html)

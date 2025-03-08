@@ -20,17 +20,20 @@ run_service() {
         2)
             echo "Running Auth Service..."
             cd auth
+            mvn clean install
             mvn spring-boot:run
             ;;      
         3)
             echo "Running News Service..."
             cd news
-            mvn spring-boot:run -Dspring-boot.run.arguments=--debug
+            mvn clean install
+            mvn spring-boot:run
             ;;                  
         4)
             echo "Running Core Service..."
             cd core
-            mvn spring-boot:run -Dspring-boot.run.arguments=--debug
+            mvn clean install
+            mvn spring-boot:run
             ;;
         5)
             echo "Exiting..."

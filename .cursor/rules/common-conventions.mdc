@@ -8,24 +8,24 @@ alwaysApply: false
 ## 1. 헥사고날 아키텍처 기본 구조
 - **도메인 계층** (내부 육각형):
   ```
-  com.kab.[도메인].domain.model: 핵심 도메인 모델
-  com.kab.[도메인].domain.service: 순수 도메인 서비스
-  com.kab.[도메인].domain.port: 포트 인터페이스
+  com.salt.[도메인].domain.model: 핵심 도메인 모델
+  com.salt.[도메인].domain.service: 순수 도메인 서비스
+  com.salt.[도메인].domain.port: 포트 인터페이스
   ```
 
 - **애플리케이션 계층** (내부 육각형 주변):
   ```
-  com.kab.[도메인].application.port.in: 인바운드 포트 (유스케이스)
-  com.kab.[도메인].application.port.out: 아웃바운드 포트
-  com.kab.[도메인].application.service: 유스케이스 구현체
+  com.salt.[도메인].application.port.in: 인바운드 포트 (유스케이스)
+  com.salt.[도메인].application.port.out: 아웃바운드 포트
+  com.salt.[도메인].application.service: 유스케이스 구현체
   ```
 
 - **어댑터 계층** (외부 육각형):
   ```
-  com.kab.[도메인].adapter.in.web: 웹 컨트롤러
-  com.kab.[도메인].adapter.in.grpc: gRPC 서비스 구현
-  com.kab.[도메인].adapter.out.persistence: 데이터베이스 어댑터
-  com.kab.[도메인].adapter.out.messaging: 메시징 어댑터
+  com.salt.[도메인].adapter.in.web: 웹 컨트롤러
+  com.salt.[도메인].adapter.in.grpc: gRPC 서비스 구현
+  com.salt.[도메인].adapter.out.persistence: 데이터베이스 어댑터
+  com.salt.[도메인].adapter.out.messaging: 메시징 어댑터
   ```
 
 ## 2. DDD 패턴 공통 적용
@@ -178,9 +178,9 @@ alwaysApply: false
 - **기술 부채 관리**: 리팩토링 전략, 코드 복잡도 관리
 
 ## 11. 신뢰할 수 있는 홈페이지
-- [Spring Framework 공식 문서](https://docs.spring.io/spring-framework/reference/index.html)
-- [마틴 파울러 블로그](https://martinfowler.com/)
-- [Java 21 공식 문서](https://docs.oracle.com/en/java/javase/21/)
-- [Baeldung Spring 가이드](https://www.baeldung.com/)
-- [InfoQ 아키텍처 아티클](https://www.infoq.com/architecture-design/)
-- [OWASP 보안 체크리스트](https://cheatsheetseries.owasp.org/)
+- [Spring Framework 공식 문서](mdc:https:/docs.spring.io/spring-framework/reference/index.html)
+- [마틴 파울러 블로그](mdc:https:/martinfowler.com)
+- [Java 21 공식 문서](mdc:https:/docs.oracle.com/en/java/javase/21)
+- [Baeldung Spring 가이드](mdc:https:/www.baeldung.com)
+- [InfoQ 아키텍처 아티클](mdc:https:/www.infoq.com/architecture-design)
+- [OWASP 보안 체크리스트](mdc:https:/cheatsheetseries.owasp.org)
