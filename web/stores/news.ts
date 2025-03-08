@@ -13,9 +13,8 @@ interface Article {
   title: string
   abstract: string
   url: string
-  byline: string
   published_date: string
-  multimedia: Array<{
+  multimedia?: Array<{
     url: string
     format: string
   }>
@@ -35,15 +34,57 @@ export const useNewsStore = defineStore('news', {
           title: '경제 뉴스 1',
           abstract: '경제 뉴스 1의 요약입니다.',
           url: 'https://example.com/news1',
-          byline: '기자 이름',
           published_date: '2023-10-01',
-          multimedia: [{ url: 'https://example.com/image1.jpg', format: 'Standard Thumbnail' }],
+          multimedia: [{ url: 'https://placehold.co/600x400', format: 'Standard Thumbnail' }],
           relatedStocks: [
             { name: '테슬라', ticker: 'TSLA', trend: 'up' },
             { name: '애플', ticker: 'AAPL', trend: 'down' }
           ]
         },
-        // 추가 기사 데이터...
+        {
+          id: '2',
+          title: '경제 뉴스 2',
+          abstract: '경제 뉴스 2의 요약입니다.',
+          url: 'https://example.com/news2',
+          published_date: '2023-10-01',
+          relatedStocks: [
+            { name: '테슬라', ticker: 'TSLA', trend: 'up' },
+            { name: '애플', ticker: 'AAPL', trend: 'down' }
+          ]
+        },
+        {
+          id: '3',
+          title: '경제 뉴스 3',
+          abstract: '경제 뉴스 3의 요약입니다.',
+          url: 'https://example.com/news3',
+          published_date: '2023-10-01',
+          relatedStocks: [
+            { name: '테슬라', ticker: 'TSLA', trend: 'up' },
+            { name: '애플', ticker: 'AAPL', trend: 'down' }
+          ]
+        },
+        {
+          id: '4',
+          title: '경제 뉴스 4',
+          abstract: '경제 뉴스 4의 요약입니다.',
+          url: 'https://example.com/news4',
+          published_date: '2023-10-01',
+          relatedStocks: [
+            { name: '테슬라', ticker: 'TSLA', trend: 'up' },
+            { name: '애플', ticker: 'AAPL', trend: 'down' }
+          ]
+        },
+        {
+          id: '5',
+          title: '경제 뉴스 5',
+          abstract: '경제 뉴스 5의 요약입니다.',
+          url: 'https://example.com/news5',
+          published_date: '2023-10-01',
+          relatedStocks: [
+            { name: '테슬라', ticker: 'TSLA', trend: 'up' },
+            { name: '애플', ticker: 'AAPL', trend: 'down' }
+          ]
+        },
       ]
     }
   }

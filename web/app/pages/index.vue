@@ -40,20 +40,6 @@ function analyzeWithAI(articleId: string) {
   
   // 실제로는 API 호출을 통해 AI 분석 결과를 가져옴
   setTimeout(() => {
-    // 목업 AI 분석 결과
-    const analyses = [
-      "이 뉴스는 S&P 500에 단기적으로 긍정적 영향을 줄 것으로 예상됩니다. 기술주 중심으로 상승세가 예상됩니다.",
-      "뉴욕증시에 부정적 영향이 예상됩니다. 금리 정책 변화로 인한 시장 불안정성이 증가할 수 있습니다.",
-      "NASDAQ 지수에 중립적 영향이 예상됩니다. 단, 대형 기술주는 실적 발표 이후 상승 가능성이 있습니다.",
-      "다우지수에 긍정적 영향이 예상됩니다. 소비재와 산업재 섹터가 특히 수혜를 받을 전망입니다.",
-      "미국 국채 수익률 상승으로 인한 기술주 중심의 하락 압력이 예상됩니다. 방어주로의 자금 이동에 주목하세요."
-    ]
-    
-    // 랜덤 분석 결과 선택
-    const randomAnalysis = analyses[Math.floor(Math.random() * analyses.length)]
-    aiAnalysisResult.value.set(articleId, randomAnalysis)
-    
-    // 로딩 상태 해제
     aiAnalysisLoading.value = false
   }, 1000)
 }
@@ -75,30 +61,26 @@ const newsSections = {
   'global-economy': { name: '국제 경제', color: '#F44336' }
 }
 
-// 뉴스 섹션 가져오기 (없으면 랜덤 배정)
-function getNewsSection(article) {
+// 뉴스 섹션 가져오기 (news.ts에서 가져오기)
+function getNewsSection(article: { section?: string }) {
   if (article.section && newsSections[article.section]) {
     return article.section
   }
-  // 목업 데이터용: 없으면 랜덤 섹션 배정
-  const sectionKeys = Object.keys(newsSections)
-  return sectionKeys[Math.floor(Math.random() * sectionKeys.length)]
+  // news.ts에서 섹션 정보를 가져오는 로직 추가
+  // 예시: return newsStore.getSection(article.id) || 'default-section'
+  return 'default-section'
 }
 
 // 페이지 로드 시 데이터 로딩 시뮬레이션
 onMounted(() => {
-  // 잠시 로딩 시간 시뮬레이션
   setTimeout(() => {
     loading.value = false
-    
+
     // 초기 도움돼요 카운트와 댓글 카운트 설정 (목업 데이터)
     featuredNews.value.forEach(article => {
       // 초기값 설정 (실제로는 API에서 가져온 값 사용)
-      if (!article.helpfulCount) {
-        helpfulCounts.value.set(article.id, Math.floor(Math.random() * 50))
-      } else {
-        helpfulCounts.value.set(article.id, article.helpfulCount)
-      }
+      const count = Math.floor(Math.random() * 50)
+      helpfulCounts.value.set(article.id, count)
     })
   }, 500)
 })
@@ -112,12 +94,6 @@ function getCommentCount(articleId: string) {
 <template>
   <div class="ny-times-home">
     <LoginButton />
-    <!-- 헤더 섹션 -->
-    <div class="header-section">
-      <h1 class="main-title">포츈 매트릭스 추천 뉴스</h1>
-      <div class="sub-header">최신 경제 뉴스와 이야기</div>
-    </div>
-
     <LoadSpinner v-if="loading" />
     
     <template v-else>
@@ -129,14 +105,14 @@ function getCommentCount(articleId: string) {
           <!-- 메인 뉴스 (가장 큰 카드) -->
           <div class="main-news-card" v-if="mainNews">
             <div class="news-image" v-if="mainNews.multimedia && mainNews.multimedia.length > 0">
-              <img :src="mainNews.multimedia[0].url" :alt="mainNews.title">
+              <img :src="mainNews.multimedia[0]?.url" :alt="mainNews.title">
             </div>
             <div class="news-content">
               <a :href="mainNews.url" target="_blank" rel="noopener" class="news-link">
                 <h3 class="news-title">{{ mainNews.title }}</h3>
               </a>
-              <div class="news-section-tag" :style="{ backgroundColor: newsSections[getNewsSection(mainNews)].color }">
-                {{ newsSections[getNewsSection(mainNews)].name }}
+              <div class="news-section-tag" :style="{ backgroundColor: newsSections[getNewsSection(mainNews)]?.color }">
+                {{ newsSections[getNewsSection(mainNews)]?.name }}
               </div>
               <p class="news-abstract">{{ mainNews.abstract }}</p>
               
@@ -179,8 +155,8 @@ function getCommentCount(articleId: string) {
                 <a :href="article.url" target="_blank" rel="noopener" class="news-link">
                   <h3 class="news-title">{{ article.title }}</h3>
                 </a>
-                <div class="news-section-tag small" :style="{ backgroundColor: newsSections[getNewsSection(article)].color }">
-                  {{ newsSections[getNewsSection(article)].name }}
+                <div class="news-section-tag small" :style="{ backgroundColor: newsSections[getNewsSection(article)]?.color }">
+                  {{ newsSections[getNewsSection(article)]?.name }}
                 </div>
                 <p class="news-abstract">{{ article.abstract }}</p>
                 
@@ -305,7 +281,6 @@ function getCommentCount(articleId: string) {
   overflow: hidden;
   box-shadow: 0 2px 10px rgba(0,0,0,0.05);
   height: 100%;
-  padding: 20px;
   margin-bottom: 32px;
 }
 

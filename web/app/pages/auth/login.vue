@@ -1,4 +1,4 @@
-<!-- <script setup lang="ts">
+<script setup lang="ts">
 import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth'
 import { useRouter } from 'vue-router'
 
@@ -93,4 +93,4 @@ p {
   width: 24px;
   height: 24px;
 }
-</style>  -->
+</style> 

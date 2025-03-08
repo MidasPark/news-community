@@ -1,16 +1,12 @@
 <script setup lang="ts">
 useServerHead({
-  htmlAttrs: { lang: 'en' },
+  htmlAttrs: { lang: 'kr' },
 })
 useSeoMeta({
-  titleTemplate: 'Nuxt HN | %s',
-  description: 'HackerNews clone built with Nuxt.',
+  titleTemplate: '포츈 매트릭스 | %s',
+  description: '미국의 주요 뉴스를 포츈 매트릭스가 분석하고 추천합니다.',
   ogImage: 'https://hn.nuxt.dev/cover.jpg',
-  ogImageAlt: 'Nuxt Hackernews',
-  twitterImage: 'https://hn.nuxt.dev/cover.jpg',
-  twitterSite: '@nuxt_js',
-  twitterCreator: '@nuxt_js',
-  twitterCard: 'summary_large_image',
+  ogImageAlt: '포츈 매트릭스',
 })
 
 </script>
