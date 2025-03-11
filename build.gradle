@@ -1,0 +1,55 @@
+plugins {
+    id 'java'
+    id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+}
+
+group = 'com.salt'
+version = '1.0-SNAPSHOT'
+
+tasks.named('test') {
+    jvmArgs("-Xshare:off")
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencyManagement {
+    imports {
+        mavenBom 'org.springframework.boot:spring-boot-dependencies:3.4.3'
+    }
+}
+
+subprojects {
+    apply plugin: 'java'
+
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(21)
+        }
+    }
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        // Define common dependencies here if needed
+    }
+}
+
+// project(':gateway') {
+//     // Specific configurations for the gateway module
+// }
+
+// project(':auth') {
+//     // Specific configurations for the auth module
+// }
+
+project(':news') {
+    // Specific configurations for the news module
+}
+
+// project(':core') {
+//     // Specific configurations for the core module
+// }

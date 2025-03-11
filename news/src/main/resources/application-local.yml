@@ -1,15 +1,10 @@
 server:
   port: 8082
 
-kname: 123545098765432
-k1name: 123545098765432
-k2name: 123545098765432
-
 spring:
-  ktest: 123545098765432
-  k1name: 123545098765432
-  k2name: 123545098765432
-
+  k-test: 123545098765432
+  k1-name: 123545098765432
+  k2-name: 123545098765432
 #spring:
 #  datasource:
 #    url: ${POSTGRESQL_SOURCE_URL}

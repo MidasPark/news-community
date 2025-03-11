@@ -4,22 +4,19 @@
 /gateway/target/
 /news/target/
 
+# Gradle specific
+.gradle/
+build/
+.tmp/
+caches/
+daemon/
+native/
+wrapper/
+workers/
+
 # IntelliJ IDEA
 /.idea/
 /*.iml
-
-# Eclipse
-/.classpath
-/.project
-/.settings/
-
-# NetBeans
-/nbproject/private/
-/build/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
 
 # VS Code
 /.vscode/
@@ -67,4 +64,5 @@ Thumbs.db
 /web/.data
 
 # 환경 변수 파일 (민감한 정보 포함)
-.env 
+.env
+application.properties

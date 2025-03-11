@@ -4,13 +4,13 @@ import java.util.List;
 import com.salt.news.domain.NewsArticleNyt;
 
 public class NytResponse {
-    private List<NewsArticleNyt> articles;
+    private List<NewsArticleNyt> results; // 응답 데이터의 필드 이름과 일치
 
-    public List<NewsArticleNyt> getArticles() {
-        return articles;
+    public List<NewsArticleNyt> getResults() {
+        return results;
     }
 
-    public void setArticles(List<NewsArticleNyt> articles) {
-        this.articles = articles;
+    public void setResults(List<NewsArticleNyt> results) {
+        this.results = results;
     }
 }
