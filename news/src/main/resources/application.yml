@@ -1,24 +1,17 @@
 server:
   port: 8082
 
-kname: 123545098765432
-k1name: 123545098765432
-k2name: 123545098765432
+debug: true
 
 spring:
-  ktest: 123545098765432
-  k1name: 123545098765432
-  k2name: 123545098765432
-
-#spring:
-#  datasource:
-#    url: ${POSTGRESQL_SOURCE_URL}
-#    username: ${POSTGRESQL_SOURCE_USERNAME}
-#    password: ${SPRING_DATASOURCE_PASSWORD}
-#  jpa:
-#    hibernate:
-#      ddl-auto: update
-#    show-sql: true
-#  flyway:
-#    enabled: true
-#    locations: classpath:db/migration
+  datasource:
+    url: ${POSTGRESQL_SOURCE_URL}
+    username: ${POSTGRESQL_SOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
