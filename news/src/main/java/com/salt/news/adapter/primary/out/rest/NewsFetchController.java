@@ -1,27 +1,26 @@
 package com.salt.news.adapter.primary.out.rest;
 
-import com.salt.news.port.primary.out.rest.NytApiPort;
-import com.salt.news.domain.NewsArticleNyt;
+import com.salt.news.domain.news.response.NewsDataResponse;
+import com.salt.news.port.primary.out.rest.NewsDataPort;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.beans.factory.annotation.Autowired;
-import java.util.List;
 
 @RestController
-@RequestMapping("/rest/nyt")
-public class NytController {
+@RequestMapping("/news/fetch")
+public class NewsFetchController {
 
-    private final NytApiPort nytApiPort;
+    private final NewsDataPort newsDataPort;
 
     @Autowired
-    public NytController(NytApiPort nytApiPort) {
-        this.nytApiPort = nytApiPort;
+    public NewsFetchController(NewsDataPort newsDataPort) {
+        this.newsDataPort = newsDataPort;
     }
 
     @GetMapping("/update_news")
     public String updateNews() {
-        List<NewsArticleNyt> response = nytApiPort.fetchAllNewsArticles();
+        NewsDataResponse response = newsDataPort.fetchAllNewsArticles();
 
         return "updateNews running!";
     }
