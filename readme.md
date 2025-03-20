@@ -61,7 +61,7 @@
 ---
 
 ## Git 브랜치 전략
-- [브랜치 전략](./readme/git.md)
+- [브랜치 전략](./readme/git_branch.md)
 
 --- 
 
