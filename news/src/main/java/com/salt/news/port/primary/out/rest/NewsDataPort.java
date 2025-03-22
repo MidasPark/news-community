@@ -24,23 +24,22 @@ public class NewsDataPort {
     public void init() {
     }
 
-    public NewsDataResponse fetchAllNewsArticles() {
-        String apiUrl = getApiUrl("business,politics", "economic,policy");
+    public NewsDataResponse fetchNewsArticles(String category, String query) {
+        String apiUrl = getApiUrl(category, query);
         try {
             ResponseEntity<NewsDataResponse> response = restTemplate.getForEntity(apiUrl, NewsDataResponse.class);
             return response.getBody();
         } catch (RestClientException e) {
-            // 예외 처리 코드
             throw new RuntimeException("NewsData API 요청 실패", e);
         }
     }
 
-    private String getApiUrl(String category, String q) {
+    private String getApiUrl(String category, String query) {
         return UriComponentsBuilder.fromUriString(baseUrl)
                 .queryParam("country", "us")
                 .queryParam("language", "en")
                 .queryParam("category", category)
-                .queryParam("q", q)
+                .queryParam("q", query)
                 .queryParam("apikey", env.getProperty("NEWS_DATA_KEY"))
                 .build()
                 .toUriString();

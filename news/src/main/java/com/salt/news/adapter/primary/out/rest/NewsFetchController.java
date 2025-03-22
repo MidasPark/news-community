@@ -20,7 +20,7 @@ public class NewsFetchController {
 
     @GetMapping("/update_news")
     public String updateNews() {
-        NewsDataResponse response = newsDataPort.fetchAllNewsArticles();
+        NewsDataResponse response = newsDataPort.fetchNewsArticles("business,politics", "economic,policy");
 
         return "updateNews running!";
     }
