@@ -1,5 +1,11 @@
+# 스프링 서버 포트
 server:
   port: 8082
+
+# gRPC 서버 포트
+grpc:
+  server:
+    port: 50052
 
 debug: true
 
