@@ -1,4 +1,4 @@
-package com.salt.news.application.config;
+package com.salt.gateway.application.config;
 
 import io.swagger.v3.oas.models.ExternalDocumentation;
 import io.swagger.v3.oas.models.OpenAPI;
@@ -14,8 +14,8 @@ public class SwaggerConfig {
     public OpenAPI springNewsOpenAPI() {
         return new OpenAPI()
                 .info(new Info()
-                        .title("News API")
-                        .description("News API Description")
+                        .title("Gateway API")
+                        .description("Gateway API Description")
                         .version("v1.0.0")
                         .license(new License().name("Apache 2.0").url("http://springdoc.org")))
                 .externalDocs(new ExternalDocumentation()

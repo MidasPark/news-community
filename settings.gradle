@@ -4,7 +4,6 @@
 
 rootProject.name = 'news-community-root'
 include 'news'
-
-// include(':gateway')
-// include(':auth')
-// include(':core')
+include 'gateway'
+//include 'auth'
+//include 'core'
