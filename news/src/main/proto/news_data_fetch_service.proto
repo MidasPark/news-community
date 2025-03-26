@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.salt.news.port.primary.in.grpc";
+
+service NewsDataService {
+  rpc UpdateNews (UpdateNewsRequest) returns (UpdateNewsResponse) {}
+}
+
+message UpdateNewsRequest {
+  string categories = 1;
+  string keywords = 2;
+}
+
+message UpdateNewsResponse {
+  string message = 1;
+}

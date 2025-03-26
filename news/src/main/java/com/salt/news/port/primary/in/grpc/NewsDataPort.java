@@ -1,0 +1,1 @@
+package com.salt.news.port.primary.in.grpc;
