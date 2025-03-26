@@ -1,9 +1,7 @@
 server:
   port: 8083
 
-spring:
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: http://localhost:8081/oauth/token
+# gRPC 서버 포트
+grpc:
+  server:
+    port: 50053
