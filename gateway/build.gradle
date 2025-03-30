@@ -50,8 +50,11 @@ dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-databind'
     implementation 'org.springframework.boot:spring-boot-starter'
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.flywaydb:flyway-core'
-    runtimeOnly 'org.postgresql:postgresql'
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc:3.4.3'
+
+    // postgresql
+    implementation 'org.flywaydb:flyway-database-postgresql:11.5.0'
+    implementation 'org.postgresql:postgresql:42.7.5'
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.11.4'
     testImplementation 'org.mockito:mockito-core:5.15.2'
