@@ -48,15 +48,18 @@ bootRun {
 
 dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-databind'
-    implementation 'org.springframework.boot:spring-boot-starter'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.flywaydb:flyway-core'
-    runtimeOnly 'org.postgresql:postgresql'
+    implementation 'org.springframework.boot:spring-boot-starter:3.4.3'
+    implementation 'org.springframework.boot:spring-boot-starter-web:3.4.3'
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc:3.4.3'
+
+    // postgresql
+    implementation 'org.flywaydb:flyway-database-postgresql:11.5.0'
+    implementation 'org.postgresql:postgresql:42.7.5'
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.11.4'
     testImplementation 'org.mockito:mockito-core:5.15.2'
     testImplementation 'net.bytebuddy:byte-buddy:1.17.2'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test:3.4.3'
 
     // 스웨거 사용 의존성
     // https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-starter-webmvc-ui

@@ -1,6 +1,6 @@
 package com.salt.news.port.primary.out.rest;
 
-import com.salt.news.adapter.primary.out.rest.NewsFetchController;
+import com.salt.news.adapter.primary.out.rest.v1.NewsFetchController;
 import com.salt.news.domain.news.response.NewsDataArticle;
 import com.salt.news.domain.news.response.NewsDataResponse;
 import org.junit.jupiter.api.DisplayName;
