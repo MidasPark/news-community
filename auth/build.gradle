@@ -3,30 +3,49 @@
  */
 
 plugins {
-    id 'buildlogic.java-conventions'
+    id 'java'
+    id 'org.springframework.boot' version '3.1.0'
+    id 'io.spring.dependency-management' version '1.1.7'
 }
 
 dependencies {
-    api libs.org.springframework.boot.spring.boot.starter.data.redis
-    api libs.org.springframework.boot.spring.boot.starter
-    api libs.org.springframework.boot.spring.boot.starter.web
-    api libs.com.google.firebase.firebase.admin
-    api libs.com.google.protobuf.protobuf.java
-    api libs.io.grpc.grpc.netty.x1
-    api libs.io.grpc.grpc.protobuf
-    api libs.io.grpc.grpc.stub
-    api libs.com.google.guava.guava
-    api libs.javax.annotation.javax.annotation.api
-    api project(':core')
-    api libs.org.springframework.boot.spring.boot.starter.data.jpa
-    api libs.org.postgresql.postgresql.x1
-    api libs.org.flywaydb.flyway.core.x1
-    api libs.org.flywaydb.flyway.database.postgresql
-    api libs.jakarta.persistence.jakarta.persistence.api
-    api libs.org.springframework.boot.spring.boot.starter.security
-    api libs.io.jsonwebtoken.jjwt.api
+    implementation libs.org.springframework.boot.spring.boot.starter.data.redis
+    implementation libs.org.springframework.boot.spring.boot.starter
+    implementation libs.org.springframework.boot.spring.boot.starter.web
+    implementation libs.com.google.firebase.firebase.admin
+    implementation libs.com.google.protobuf.protobuf.java
+    implementation libs.io.grpc.grpc.netty.x1
+    implementation libs.io.grpc.grpc.protobuf
+    implementation libs.io.grpc.grpc.stub
+    implementation libs.com.google.guava.guava
+    implementation libs.javax.annotation.javax.annotation.api
+    implementation libs.org.springframework.boot.spring.boot.starter.data.jpa
+    implementation libs.org.postgresql.postgresql.x1
+    implementation libs.org.flywaydb.flyway.core.x1
+    implementation libs.org.flywaydb.flyway.database.postgresql
+    implementation libs.jakarta.persistence.jakarta.persistence.api
+    implementation libs.org.springframework.boot.spring.boot.starter.security
+    implementation libs.io.jsonwebtoken.jjwt.api
     runtimeOnly libs.io.jsonwebtoken.jjwt.impl
     runtimeOnly libs.io.jsonwebtoken.jjwt.jackson
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.security:spring-security-oauth2-client'
+    implementation 'org.springframework.security:spring-security-oauth2-jose'
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+    testImplementation 'org.springframework.security:spring-security-test'
 }
 
 description = 'auth'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+repositories {
+    mavenCentral()
+    // 필요한 경우 추가 리포지토리 설정
+    // maven { url 'https://repo.spring.io/milestone' }
+}
