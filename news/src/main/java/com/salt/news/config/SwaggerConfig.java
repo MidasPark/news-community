@@ -1,4 +1,4 @@
-package com.salt.news.application.config;
+package com.salt.news.config;
 
 import io.swagger.v3.oas.models.ExternalDocumentation;
 import io.swagger.v3.oas.models.OpenAPI;

@@ -1,8 +1,7 @@
-package com.salt.news.adapter.primary.out.rest.v1;
+package com.salt.news.adapter.out;
 
-import com.salt.news.domain.news.response.NewsDataArticle;
-import com.salt.news.domain.news.response.NewsDataResponse;
-import com.salt.news.port.primary.out.rest.NewsDataPort;
+import com.salt.news.domain.newsdata.valueobject.NewsDataResponse;
+import com.salt.news.application.port.out.NewsDataPort;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -12,10 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.List;
-
 @RestController
-@RequestMapping("/api/v1/news_data")
+@RequestMapping("/api/news_data")
 @Tag(name = "News Data", description = "News Data")
 public class NewsFetchController {
 
@@ -43,8 +40,6 @@ public class NewsFetchController {
         if (result.results().isEmpty() || !"200".equals(result.status())) {
             throw new IllegalStateException("Invalid news data response: status=" + result.status() + ", results size=" + result.results().size());
         }
-
-
 
         return result;
     }

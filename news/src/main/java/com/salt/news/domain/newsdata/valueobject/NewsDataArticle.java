@@ -1,4 +1,4 @@
-package com.salt.news.domain.news.response;
+package com.salt.news.domain.newsdata.valueobject;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -23,4 +23,12 @@ public record NewsDataArticle(
     @JsonProperty("source_icon") String sourceIcon,
     List<String> country,
     List<String> category
-) {}
+) {
+    // 파라미터 없는 생성자: 기본값으로 채움
+    public NewsDataArticle() {
+        this(
+                "", "", "", List.of(), List.of(), "", "", "", "",
+                "", "", 0, "", "", "", List.of(), List.of()
+        );
+    }
+}

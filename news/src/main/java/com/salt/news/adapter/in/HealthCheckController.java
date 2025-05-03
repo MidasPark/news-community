@@ -1,4 +1,4 @@
-package com.salt.news.adapter.primary.in.rest;
+package com.salt.news.adapter.in;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

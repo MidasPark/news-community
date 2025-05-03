@@ -1,6 +1,6 @@
-package com.salt.news.port.primary.out.rest;
+package com.salt.news.application.port.out;
 
-import com.salt.news.domain.news.response.NewsDataResponse;
+import com.salt.news.domain.newsdata.valueobject.NewsDataResponse;
 import jakarta.annotation.PostConstruct;
 import org.springframework.core.env.Environment;
 import org.springframework.http.ResponseEntity;
@@ -9,11 +9,14 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.List;
+
 @Component
 public class NewsDataPort {
     private final String baseUrl = "https://newsdata.io/api/1/news";
     private final Environment env;
     private final RestTemplate restTemplate;
+    public NewsDataResponse fetchNewsArticles;
 
     public NewsDataPort(Environment env, RestTemplate restTemplate) {
         this.env = env;
